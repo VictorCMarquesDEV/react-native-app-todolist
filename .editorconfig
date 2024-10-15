@@ -1,0 +1,50 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = crlf
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+# CREATE TABLE IF NOT EXISTS tasks (
+#   idtask SERIAL PRIMARY KEY,
+#   nametask TEXT NOT NULL,
+#   statustask INTEGER NOT NULL,
+#   prioritytask INTEGER NOT NULL
+# );
+
+# CREATE TABLE IF NOT EXISTS taskitems (
+#   idtaskitem SERIAL PRIMARY KEY,
+#   nametaskitem TEXT NOT NULL,
+#   statustaskitem INTEGER NOT NULL,
+#   fk_idtask INTEGER NOT NULL,
+#   FOREIGN KEY (fk_idtask) REFERENCES tasks (idtask)
+# );
+
+# INSERT INTO tasks (nametask, statustask, prioritytask) VALUES ('task1', 1, 1);
+# INSERT INTO tasks (nametask, statustask, prioritytask) VALUES ('task2', 2, 1);
+# INSERT INTO tasks (nametask, statustask, prioritytask) VALUES ('task3', 3, 1);
+# INSERT INTO tasks (nametask, statustask, prioritytask) VALUES ('task4', 1, 2);
+# INSERT INTO tasks (nametask, statustask, prioritytask) VALUES ('task5', 2, 2);
+# INSERT INTO tasks (nametask, statustask, prioritytask) VALUES ('task6', 3, 2);
+# INSERT INTO tasks (nametask, statustask, prioritytask) VALUES ('task7', 1, 3);
+# INSERT INTO tasks (nametask, statustask, prioritytask) VALUES ('task8', 2, 3);
+# INSERT INTO tasks (nametask, statustask, prioritytask) VALUES ('task9', 3, 3);
+
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem1', 1, 1);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem2', 2, 1);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem3', 1, 2);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem4', 2, 2);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem5', 1, 3);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem6', 2, 3);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem7', 1, 4);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem8', 2, 5);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem9', 1, 6);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem10', 2, 7);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem11', 1, 8);
+# INSERT INTO taskitems (nametaskitem, statustaskitem, fk_idtask) VALUES ('taskitem12', 2, 9);
