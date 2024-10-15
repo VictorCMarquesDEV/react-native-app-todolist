@@ -19,7 +19,7 @@ export function InputAddTask({ onPress, onChangeText, onBlur, value }: Props) {
                 onBlur={onBlur}
             />
             <InputButton onPress={onPress}>
-                <Text>P</Text>
+                <Text>+</Text>
             </InputButton>
         </Container>
     );

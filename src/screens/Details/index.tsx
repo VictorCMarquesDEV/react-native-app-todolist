@@ -1,17 +1,13 @@
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
-import { TaskContext } from "../../context/TaskContext";
 import { Header } from "../../components/Header";
 import { View, StyleSheet, Text } from "react-native";
 import { Button as ButtonBlack } from "../../components/ButtonBlack/Button";
-import { Button as ButtonOrange } from "../../components/ButtonOrange/Button";
 import { TaskProps } from '../../utils/types';
 
 
 export default function Details() {
 
-    const { tasks, setTasks } = useContext(TaskContext);
-    const { task } = useContext(TaskContext);
     const navigation = useNavigation();
 
     function handleTaskChangeStatus(taskToChange: TaskProps) {
