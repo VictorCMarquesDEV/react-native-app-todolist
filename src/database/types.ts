@@ -2,8 +2,7 @@ export type TaskDatabase = {
     idtask: number
     nametask: string
     statustask: number
-    prioritytask: string
-    datetask: string
+    prioritytask: number
 }
 
 export type TaskItemDatabase = {
