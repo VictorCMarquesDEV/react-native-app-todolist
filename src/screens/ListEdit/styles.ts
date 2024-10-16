@@ -12,6 +12,13 @@ export const Container = styled.View`
     gap: ${RFValue(10)}px;
 `;
 
+export const ContainerDetails = styled.View`
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+`;
+
 export const ContainerList = styled.View`
     width: 100%;
     flex: 1;
@@ -19,9 +26,16 @@ export const ContainerList = styled.View`
     align-items: center;
 `;
 
-export const TextTitle = styled.Text`
+export const Title = styled.Text`
     margin-top: ${RFValue(10)}px;
     text-align: center;
     font-family: ${theme.FONTS.POPPINSMEDIUM};
+    font-size: ${RFValue(16)}px;
+`;
+
+export const Description = styled.Text`
+    margin-top: ${RFValue(10)}px;
+    text-align: center;
+    font-family: ${theme.FONTS.POPPINSLIGHT};
     font-size: ${RFValue(16)}px;
 `;

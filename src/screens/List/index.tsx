@@ -1,14 +1,14 @@
 import { View, Text, Alert, StyleSheet } from 'react-native';
 import { Task } from '../../components/Task';
 import { InputAddTask } from '../../components/InputAddTask';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Header } from '../../components/Header';
 import { Container, Title } from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
 import { TaskDatabase } from '../../database/types';
 import { supabase } from '../../database/initializeDB';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useTheme } from 'styled-components';
@@ -50,6 +50,24 @@ export default function List() {
     function handleGoListEdit(idTask: number) {
         navigation.navigate('ListEdit' as never, { idTask })
     }
+
+    useFocusEffect(
+        useCallback(() => {
+            const loaddata = async () => {
+                try {
+                    const { data } = await supabase
+                        .from('tasks')
+                        .select()
+                        .order('prioritytask', { ascending: false })
+                    setListTasksAndamento(data.filter(task => task.statustask === 1));
+                    setListTasksAtrasadas(data.filter(task => task.statustask === 2));
+                } catch (err) {
+                    console.error('Error fetching data:', err); // Log error for debugging
+                }
+            };
+            loaddata();
+        }, [listTasksAndamento, listTasksAtrasadas])
+    );
 
     useEffect(() => {
         const fetchData = async () => {

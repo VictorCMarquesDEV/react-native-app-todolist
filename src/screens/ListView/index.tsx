@@ -118,32 +118,3 @@ export default function ListView() {
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    dropdown: {
-        width: '100%',
-        height: 50,
-        borderColor: '#1e1e1e',
-        borderWidth: 1,
-        borderRadius: 10,
-        padding: 15,
-    },
-    label: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        left: 22,
-        top: 8,
-        zIndex: 999,
-        paddingHorizontal: 8,
-        fontSize: 16,
-        color: '#1e1e1e',
-    },
-    placeholderStyle: {
-        fontSize: 16,
-        color: '#1e1e1e',
-    },
-    selectedTextStyle: {
-        fontSize: 16,
-        color: '#1e1e1e',
-    }
-});

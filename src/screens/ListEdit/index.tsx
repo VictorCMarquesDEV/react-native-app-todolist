@@ -1,52 +1,34 @@
-import { View, Text, Alert, StyleSheet } from 'react-native';
-import { Task } from '../../components/Task';
-import { InputAddTask } from '../../components/InputAddTask';
+import { FlatList, StyleSheet, View, Text } from 'react-native';
 import { useEffect, useState } from 'react';
 import { Header } from '../../components/Header';
-import { Container, ContainerList, TextTitle } from './styles';
+import { Container, ContainerDetails, Title, Description, ContainerList } from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
-import { TaskDatabase } from '../../database/types';
 import { supabase } from '../../database/initializeDB';
-import { useNavigation } from '@react-navigation/native';
-import { FlatList } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import { useTheme } from 'styled-components';
-import { Button } from '../../components/ButtonBlack/Button';
+import { useRoute } from '@react-navigation/native';
+import { TaskItemDatabase } from '../../database/types';
+import { TaskItem } from '../../components/TaskItem';
 
 
 const statusList = [
     { label: 'Em Andamento', value: 1 },
-    { label: 'Concluída', value: 2 },
-    { label: 'Atrasada', value: 3 },
+    { label: 'Atrasada', value: 2 },
 ];
 
 const priorityList = [
     { label: 'Baixa Prioridade', value: 1 },
-    { label: 'Média Prioridade', value: 2 },
-    { label: 'Alta Prioridade', value: 3 },
+    { label: 'Alta Prioridade', value: 2 },
 ];
 
 export default function ListEdit() {
 
-    const theme = useTheme();
-    const navigation = useNavigation();
-    const [listTasks, setListTasks] = useState<TaskDatabase[]>([]);
     const [nameTask, setNameTask] = useState("");
     const [statusTask, setStatusTask] = useState(0);
     const [priorityTask, setPriorityTask] = useState(0);
+    const [listTaskItems, setListTaskItems] = useState<TaskItemDatabase[]>([]);
 
-    {/* Dropdown Top Menu */ }
-    const [valueTop, setValueTop] = useState(0);
-    const [isFocusTop, setIsFocusTop] = useState(false);
-
-    {/* Dropdown Bottom Menu */ }
-    const [valueBottom, setValueBottom] = useState(0);
-    const [isFocusBottom, setIsFocusBottom] = useState(false);
-
-    function handleGoDetails(idTask: number) {
-        navigation.navigate('Details' as never, { idTask })
-    }
+    const route = useRoute();
+    const { idTask } = route.params as { idTask: number };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -54,35 +36,32 @@ export default function ListEdit() {
                 const { data } = await supabase
                     .from('tasks')
                     .select()
-                setListTasks(data);
+                    .eq('idtask', idTask)
+                setNameTask(data[0].nametask);
+                setStatusTask(data[0].statustask);
+                setPriorityTask(data[0].prioritytask);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+            }
+            try {
+                const { data } = await supabase
+                    .from('taskitems')
+                    .select()
+                    .eq('fk_idtask', idTask)
+                setListTaskItems(data);
             } catch (err) {
                 console.error('Error fetching data:', err);
             }
         };
         fetchData();
-    }, [listTasks]);
+    }, [listTaskItems]);
 
-    const handleTaskAdd = async () => {
-        if (nameTask == "") {
-            return Alert.alert("Texto vazio. Digite algo!");
-        }
-        if (listTasks.some((task) => task.nametask === nameTask)) {
-            return Alert.alert("Essa tarefa já existe!");
-        }
+    const handleDelete = async (idTaskItem: number) => {
 
         const { data: data1 } = await supabase
-            .from('tasks')
-            .insert({
-                nametask: nameTask,
-                statustask: statusTask,
-                prioritytask: priorityTask,
-            })
-
-        setNameTask("");
-        setPriorityTask(0);
-        setStatusTask(0);
-        setValueBottom(0);
-        setValueTop(0);
+            .from('taskitems')
+            .delete()
+            .eq('idtaskitem', idTaskItem);
     }
 
     return (
@@ -93,68 +72,35 @@ export default function ListEdit() {
 
                 <Header leftText nameLeftText='< Voltar' />
 
-                <TextTitle>Adicionar Tarefa</TextTitle>
-                <InputAddTask
-                    onChangeText={setNameTask}
-                    value={nameTask}
-                />
+                <Title>Detalhes da Tarefa</Title>
 
-                <Dropdown
-                    style={[styles.dropdown, isFocusTop && { borderColor: theme.COLORS.GRAY1 }]}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    data={statusList}
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder={valueTop ? valueTop.toString() : "Selecione o status"}
-                    value={valueTop.toString()}
-                    onFocus={() => setIsFocusTop(true)}
-                    onBlur={() => setIsFocusTop(false)}
-                    onChange={item => {
-                        setValueTop(item.value);
-                        setStatusTask(item.value);
-                        setIsFocusTop(false);
-                    }}
-                />
+                <ContainerDetails>
+                    <Title>Nome: </Title>
+                    <Description>{nameTask}</Description>
+                </ContainerDetails>
+                <ContainerDetails>
+                    <Title>Status: </Title>
+                    <Description>{statusTask ? statusList[statusTask - 1].label : "Não possui Status"}</Description>
+                </ContainerDetails>
+                <ContainerDetails>
+                    <Title>Prioridade: </Title>
+                    <Description>{priorityTask ? priorityList[priorityTask - 1].label : "Não possui Prioridade"}</Description>
+                </ContainerDetails>
 
-                <Dropdown
-                    style={[styles.dropdown, isFocusBottom && { borderColor: theme.COLORS.GRAY1 }]}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    data={priorityList}
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder={valueBottom ? valueBottom.toString() : "Selecione a prioridade"}
-                    value={valueBottom.toString()}
-                    onFocus={() => setIsFocusBottom(true)}
-                    onBlur={() => setIsFocusBottom(false)}
-                    onChange={item => {
-                        setValueBottom(item.value);
-                        setPriorityTask(item.value);
-                        setIsFocusBottom(false);
-                    }}
-                />
-
-                <Button
-                    TitleButton='Adicionar'
-                    onPress={handleTaskAdd}
-                />
+                <Title>Sub-Tarefas</Title>
 
                 <ContainerList>
 
-                    <TextTitle>Lista de Tarefas</TextTitle>
                     <FlatList showsVerticalScrollIndicator={false}
-                        data={listTasks}
+                        data={listTaskItems}
                         keyExtractor={(_: any, index: number) => index.toString()}
                         renderItem={
-                            ({ item, index }: { item: TaskDatabase, index: number }) => (
-                                <Task
+                            ({ item, index }: { item: TaskItemDatabase, index: number }) => (
+                                <TaskItem
                                     data={{
-                                        nametask: item.nametask
+                                        nametask: item.nametaskitem
                                     }}
-                                    onPress={() => handleGoDetails(item.idtask)}
+                                    onDelete={() => handleDelete(item.idtaskitem)}
                                 />
                             )
                         }
@@ -172,32 +118,3 @@ export default function ListEdit() {
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    dropdown: {
-        width: '100%',
-        height: 50,
-        borderColor: '#1e1e1e',
-        borderWidth: 1,
-        borderRadius: 10,
-        padding: 15,
-    },
-    label: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        left: 22,
-        top: 8,
-        zIndex: 999,
-        paddingHorizontal: 8,
-        fontSize: 16,
-        color: '#1e1e1e',
-    },
-    placeholderStyle: {
-        fontSize: 16,
-        color: '#1e1e1e',
-    },
-    selectedTextStyle: {
-        fontSize: 16,
-        color: '#1e1e1e',
-    }
-});
