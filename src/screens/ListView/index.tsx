@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View, Text } from 'react-native';
+import { FlatList, View, Text } from 'react-native';
 import { useEffect, useState } from 'react';
 import { Header } from '../../components/Header';
 import { Container, ContainerDetails, Title, Description, ContainerList } from './styles';
@@ -31,30 +31,33 @@ export default function ListView() {
     const { idTask } = route.params as { idTask: number };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const { data } = await supabase
-                    .from('tasks')
-                    .select()
-                    .eq('idtask', idTask)
-                setNameTask(data[0].nametask);
-                setStatusTask(data[0].statustask);
-                setPriorityTask(data[0].prioritytask);
-            } catch (err) {
-                console.error('Error fetching data:', err);
-            }
-            try {
-                const { data } = await supabase
-                    .from('taskitems')
-                    .select()
-                    .eq('fk_idtask', idTask)
-                setListTaskItems(data);
-            } catch (err) {
-                console.error('Error fetching data:', err);
-            }
+        const fetchDataTask = async () => {
+
+            const { data } = await supabase
+                .from('tasks')
+                .select()
+                .eq('idtask', idTask)
+            setNameTask(data[0].nametask);
+            setStatusTask(data[0].statustask);
+            setPriorityTask(data[0].prioritytask);
+
         };
-        fetchData();
-    }, [listTaskItems]);
+
+        fetchDataTask();
+
+        const fetchDataTaskItem = async () => {
+
+            const { data } = await supabase
+                .from('taskitems')
+                .select()
+                .eq('fk_idtask', idTask)
+            setListTaskItems(data);
+
+        };
+
+        fetchDataTaskItem();
+
+    }, [idTask]);
 
     const handleDelete = async (idTaskItem: number) => {
 
