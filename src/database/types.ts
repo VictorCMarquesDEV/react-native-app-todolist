@@ -8,5 +8,4 @@ export type TaskDatabase = {
 export type TaskItemDatabase = {
     idtaskitem: number
     nametaskitem: string
-    statustaskitem: number
 }

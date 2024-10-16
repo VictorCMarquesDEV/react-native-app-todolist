@@ -7,20 +7,15 @@ type Props = PressableProps & {
     data: {
         nametask: string
     }
-    onView?: () => void;
-    onEdit?: () => void;
     onDelete?: () => void;
 }
 
 
-export function Task({ data, onView, onEdit, onDelete }: Props) {
+export function TaskItem({ data, onDelete }: Props) {
 
     return (
-        <Container onPress={onView}>
+        <Container>
             <TaskText>{data.nametask}</TaskText>
-            <ContainerIconEdit onPress={onEdit}>
-                <Feather name='edit' size={20} />
-            </ContainerIconEdit>
             <ContainerIconDelete onPress={onDelete}>
                 <Feather name='delete' size={20} color={theme.COLORS.WHITE} />
             </ContainerIconDelete>

@@ -12,7 +12,14 @@ export const Container = styled.View`
     gap: ${RFValue(10)}px;
 `;
 
-export const Title = styled.Text`
+export const ContainerList = styled.View`
+    width: 100%;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: center;
+`;
+
+export const TextTitle = styled.Text`
     margin-top: ${RFValue(10)}px;
     text-align: center;
     font-family: ${theme.FONTS.POPPINSMEDIUM};

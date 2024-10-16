@@ -3,10 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { ThemeProvider } from "styled-components/native";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './src/screens/Home';
-import Details from './src/screens/Details';
+import ListView from './src/screens/ListView';
+import ListEdit from './src/screens/ListEdit';
 import List from './src/screens/List';
 import Calendar from './src/screens/Calendar';
-import TaskProvider from './src/context/TaskContext';
 import * as Font from 'expo-font';
 import {
     useFonts,
@@ -64,16 +64,15 @@ export default function App() {
 
     return (
         <ThemeProvider theme={COLORS}>
-            <TaskProvider>
-                <NavigationContainer>
-                    <Stack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }}>
-                        <Stack.Screen name="Home" component={Home} />
-                        <Stack.Screen name="List" component={List} />
-                        <Stack.Screen name="Details" component={Details} />
-                        <Stack.Screen name="Calendar" component={Calendar} />
-                    </Stack.Navigator>
-                </NavigationContainer>
-            </TaskProvider>
+            <NavigationContainer>
+                <Stack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="Home" component={Home} />
+                    <Stack.Screen name="List" component={List} />
+                    <Stack.Screen name="ListView" component={ListView} />
+                    <Stack.Screen name="ListEdit" component={ListEdit} />
+                    <Stack.Screen name="Calendar" component={Calendar} />
+                </Stack.Navigator>
+            </NavigationContainer>
         </ThemeProvider>
     );
 }

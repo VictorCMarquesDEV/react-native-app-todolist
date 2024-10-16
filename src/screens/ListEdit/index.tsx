@@ -3,7 +3,7 @@ import { Task } from '../../components/Task';
 import { InputAddTask } from '../../components/InputAddTask';
 import { useEffect, useState } from 'react';
 import { Header } from '../../components/Header';
-import { Container, Title } from './styles';
+import { Container, ContainerList, TextTitle } from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
 import { TaskDatabase } from '../../database/types';
@@ -17,20 +17,21 @@ import { Button } from '../../components/ButtonBlack/Button';
 
 const statusList = [
     { label: 'Em Andamento', value: 1 },
-    { label: 'Atrasada', value: 2 },
+    { label: 'Concluída', value: 2 },
+    { label: 'Atrasada', value: 3 },
 ];
 
 const priorityList = [
     { label: 'Baixa Prioridade', value: 1 },
-    { label: 'Alta Prioridade', value: 2 },
+    { label: 'Média Prioridade', value: 2 },
+    { label: 'Alta Prioridade', value: 3 },
 ];
 
-export default function List() {
+export default function ListEdit() {
 
     const theme = useTheme();
     const navigation = useNavigation();
-    const [listTasksAtrasadas, setListTasksAtrasadas] = useState<TaskDatabase[]>([]);
-    const [listTasksAndamento, setListTasksAndamento] = useState<TaskDatabase[]>([]);
+    const [listTasks, setListTasks] = useState<TaskDatabase[]>([]);
     const [nameTask, setNameTask] = useState("");
     const [statusTask, setStatusTask] = useState(0);
     const [priorityTask, setPriorityTask] = useState(0);
@@ -43,12 +44,8 @@ export default function List() {
     const [valueBottom, setValueBottom] = useState(0);
     const [isFocusBottom, setIsFocusBottom] = useState(false);
 
-    function handleGoListView(idTask: number) {
-        navigation.navigate('ListView' as never, { idTask })
-    }
-
-    function handleGoListEdit(idTask: number) {
-        navigation.navigate('ListEdit' as never, { idTask })
+    function handleGoDetails(idTask: number) {
+        navigation.navigate('Details' as never, { idTask })
     }
 
     useEffect(() => {
@@ -57,21 +54,19 @@ export default function List() {
                 const { data } = await supabase
                     .from('tasks')
                     .select()
-                    .order('prioritytask', { ascending: false })
-                setListTasksAndamento(data.filter(task => task.statustask === 1));
-                setListTasksAtrasadas(data.filter(task => task.statustask === 2));
+                setListTasks(data);
             } catch (err) {
                 console.error('Error fetching data:', err);
             }
         };
         fetchData();
-    }, [listTasksAtrasadas, listTasksAndamento]);
+    }, [listTasks]);
 
-    const handleAdd = async () => {
+    const handleTaskAdd = async () => {
         if (nameTask == "") {
             return Alert.alert("Texto vazio. Digite algo!");
         }
-        if (listTasksAndamento.some((task) => task.nametask === nameTask)) {
+        if (listTasks.some((task) => task.nametask === nameTask)) {
             return Alert.alert("Essa tarefa já existe!");
         }
 
@@ -90,14 +85,6 @@ export default function List() {
         setValueTop(0);
     }
 
-    const handleDelete = async (idTask: number) => {
-
-        const { data: data1 } = await supabase
-            .from('tasks')
-            .delete()
-            .eq('idtask', idTask);
-    }
-
     return (
         <SafeAreaView style={{ width: '100%', flex: 1 }}>
 
@@ -106,7 +93,7 @@ export default function List() {
 
                 <Header leftText nameLeftText='< Voltar' />
 
-                <Title>Adicionar Tarefa</Title>
+                <TextTitle>Adicionar Tarefa</TextTitle>
                 <InputAddTask
                     onChangeText={setNameTask}
                     value={nameTask}
@@ -152,58 +139,34 @@ export default function List() {
 
                 <Button
                     TitleButton='Adicionar'
-                    onPress={handleAdd}
+                    onPress={handleTaskAdd}
                 />
 
-                <Title>Atrasadas</Title>
+                <ContainerList>
 
-                <FlatList showsVerticalScrollIndicator={false}
-                    data={listTasksAtrasadas}
-                    keyExtractor={(_: any, index: number) => index.toString()}
-                    renderItem={
-                        ({ item, index }: { item: TaskDatabase, index: number }) => (
-                            <Task
-                                data={{
-                                    nametask: item.nametask
-                                }}
-                                onView={() => handleGoListView(item.idtask)}
-                                onEdit={() => handleGoListEdit(item.idtask)}
-                                onDelete={() => handleDelete(item.idtask)}
-                            />
-                        )
-                    }
-                    ListEmptyComponent={() => (
-                        <View style={{ alignItems: 'center', backgroundColor: 'transparent' }}>
-                            <Text style={{ color: '#000000', fontSize: 16, fontWeight: 500 }}>Você não cadastrou nenhuma tarefa!</Text>
-                        </View>
-                    )}
-                    style={{ height: 100, width: '100%' }}
-                />
+                    <TextTitle>Lista de Tarefas</TextTitle>
+                    <FlatList showsVerticalScrollIndicator={false}
+                        data={listTasks}
+                        keyExtractor={(_: any, index: number) => index.toString()}
+                        renderItem={
+                            ({ item, index }: { item: TaskDatabase, index: number }) => (
+                                <Task
+                                    data={{
+                                        nametask: item.nametask
+                                    }}
+                                    onPress={() => handleGoDetails(item.idtask)}
+                                />
+                            )
+                        }
+                        ListEmptyComponent={() => (
+                            <View style={{ alignItems: 'center', backgroundColor: 'transparent' }}>
+                                <Text style={{ color: '#000000', fontSize: 16, fontWeight: 500 }}>Você não cadastrou nenhuma tarefa!</Text>
+                            </View>
+                        )}
+                        style={{ flex: 1, width: '100%' }}
+                    />
 
-                <Title>Em Andamento</Title>
-
-                <FlatList showsVerticalScrollIndicator={false}
-                    data={listTasksAndamento}
-                    keyExtractor={(_: any, index: number) => index.toString()}
-                    renderItem={
-                        ({ item, index }: { item: TaskDatabase, index: number }) => (
-                            <Task
-                                data={{
-                                    nametask: item.nametask
-                                }}
-                                onView={() => handleGoListView(item.idtask)}
-                                onEdit={() => handleGoListEdit(item.idtask)}
-                                onDelete={() => handleDelete(item.idtask)}
-                            />
-                        )
-                    }
-                    ListEmptyComponent={() => (
-                        <View style={{ alignItems: 'center', backgroundColor: 'transparent' }}>
-                            <Text style={{ color: '#000000', fontSize: 16, fontWeight: 500 }}>Você não cadastrou nenhuma tarefa!</Text>
-                        </View>
-                    )}
-                    style={{ height: 100, width: '100%' }}
-                />
+                </ContainerList>
 
             </Container>
         </SafeAreaView>
