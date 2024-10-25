@@ -1,14 +1,14 @@
 import { View, Text, Alert, StyleSheet } from 'react-native';
 import { Task } from '../../components/Task';
 import { InputAddTask } from '../../components/InputAddTask';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Header } from '../../components/Header';
 import { Container, Title } from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
 import { TaskDatabase } from '../../database/types';
 import { supabase } from '../../database/initializeDB';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { FlatList } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useTheme } from 'styled-components';
@@ -29,8 +29,7 @@ export default function List() {
 
     const theme = useTheme();
     const navigation = useNavigation();
-    const [listTasksAtrasadas, setListTasksAtrasadas] = useState<TaskDatabase[]>([]);
-    const [listTasksAndamento, setListTasksAndamento] = useState<TaskDatabase[]>([]);
+    const [listTasks, setListTasks] = useState<TaskDatabase[]>([]);
     const [nameTask, setNameTask] = useState("");
     const [statusTask, setStatusTask] = useState(0);
     const [priorityTask, setPriorityTask] = useState(0);
@@ -57,17 +56,33 @@ export default function List() {
                 .from('tasks')
                 .select()
                 .order('prioritytask', { ascending: false })
-            setListTasksAndamento(data.filter(task => task.statustask === 1));
-            setListTasksAtrasadas(data.filter(task => task.statustask === 2));
+            setListTasks(data);
         };
         fetchData();
-    }, [listTasksAtrasadas, listTasksAndamento]);
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            const loaddata = async () => {
+                try {
+                    const { data } = await supabase
+                        .from('tasks')
+                        .select()
+                        .order('prioritytask', { ascending: false })
+                    setListTasks(data);
+                } catch (err) {
+                    console.error('Error fetching data:', err); // Log error for debugging
+                }
+            };
+            loaddata();
+        }, [listTasks])
+    );
 
     const handleAdd = async () => {
         if (nameTask == "") {
             return Alert.alert("Texto vazio. Digite algo!");
         }
-        if (listTasksAndamento.some((task) => task.nametask === nameTask)) {
+        if (listTasks.some((task) => task.nametask === nameTask)) {
             return Alert.alert("Essa tarefa já existe!");
         }
 
@@ -154,7 +169,7 @@ export default function List() {
                 <Title>Atrasadas</Title>
 
                 <FlatList showsVerticalScrollIndicator={false}
-                    data={listTasksAtrasadas}
+                    data={listTasks.filter(task => task.statustask === 2)}
                     keyExtractor={(_: any, index: number) => index.toString()}
                     renderItem={
                         ({ item, index }: { item: TaskDatabase, index: number }) => (
@@ -179,7 +194,7 @@ export default function List() {
                 <Title>Em Andamento</Title>
 
                 <FlatList showsVerticalScrollIndicator={false}
-                    data={listTasksAndamento}
+                    data={listTasks.filter(task => task.statustask === 1)}
                     keyExtractor={(_: any, index: number) => index.toString()}
                     renderItem={
                         ({ item, index }: { item: TaskDatabase, index: number }) => (

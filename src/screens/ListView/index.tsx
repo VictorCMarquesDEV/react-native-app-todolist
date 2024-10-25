@@ -31,33 +31,37 @@ export default function ListView() {
     const { idTask } = route.params as { idTask: number };
 
     useEffect(() => {
-        const fetchDataTask = async () => {
+        const fetchData = async () => {
 
-            const { data } = await supabase
-                .from('tasks')
-                .select()
-                .eq('idtask', idTask)
-            setNameTask(data[0].nametask);
-            setStatusTask(data[0].statustask);
-            setPriorityTask(data[0].prioritytask);
+            try {
+                const { data } = await supabase
+                    .from('tasks')
+                    .select()
+                    .eq('idtask', idTask)
+                const name = data.map(item => item?.nametask);
+                const status = data.map(item => item?.statustask);
+                const priority = data.map(item => item?.prioritytask);
+                setNameTask(name[0]);
+                setStatusTask(status[0]);
+                setPriorityTask(priority[0]);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+            }
+            try {
+                const { data } = await supabase
+                    .from('taskitems')
+                    .select()
+                    .eq('fk_idtask', idTask)
+                setListTaskItems(data);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+            }
 
         };
 
-        fetchDataTask();
+        fetchData();
 
-        const fetchDataTaskItem = async () => {
-
-            const { data } = await supabase
-                .from('taskitems')
-                .select()
-                .eq('fk_idtask', idTask)
-            setListTaskItems(data);
-
-        };
-
-        fetchDataTaskItem();
-
-    }, [idTask]);
+    }, [idTask, listTaskItems]);
 
     const handleDelete = async (idTaskItem: number) => {
 

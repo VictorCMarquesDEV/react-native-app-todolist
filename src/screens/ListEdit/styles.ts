@@ -26,6 +26,14 @@ export const ContainerList = styled.View`
     align-items: center;
 `;
 
+export const Separator = styled.View`
+    width: 100%;
+    height: ${RFValue(1)}px;
+    background-color: ${theme.COLORS.BLACK};
+    margin-top: ${RFValue(20)}px;
+    margin-bottom: ${RFValue(20)}px;
+`;
+
 export const Title = styled.Text`
     margin-top: ${RFValue(10)}px;
     text-align: center;
