@@ -1,5 +1,5 @@
 
-# App TO DO List
+# App ToDo List
 
 Este repositório contém o código fonte do aplicativo "TO DO List", desenvolvido em React Native. O app permite aos usuários criar e marcar como concluídas suas tarefas diárias, definir prioridade, definir prazo, além de exibir uma tela de detalhe de cada tarefa, permitindo que adicione itens à tarefa.
 
