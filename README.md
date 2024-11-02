@@ -9,6 +9,7 @@ Este repositório contém o código fonte do aplicativo "TO DO List", desenvolvi
 * Expo: Plataforma de código aberto para criar aplicativos nativos universais para Android, iOS e web com JavaScript e React.
 * TypeScript: Superconjunto de JavaScript, ou seja, um conjunto de ferramentas e formas mais eficientes de escrever código JavaScript, adicionando recursos que não estão presentes de maneira nativa na linguagem.
 * Node.JS: Ambiente de execução do código JavaScript do lado servidor (server side), que na prática se reflete na possibilidade de criar aplicações standalone (autossuficientes) em uma máquina servidora, sem a necessidade do navegador.
+* Supabase: Alternativa de código aberto ao Firebase. Ele oferece banco de dados Postgres, autenticação, APIs instantâneas, Edge Functions, assinaturas em tempo real, armazenamento e embeddings de vetor.
 
 ### Pré-requisitos
 * Node.js e yarn (ou npm): Instale as últimas versões em https://nodejs.org/.
@@ -29,6 +30,18 @@ cd react-native-app-todolist
 ```
 yarn
 ```
+
+Configure o banco de dados:
+* Crie um banco de dados: Siga as instruções do seu banco de dados para criar um novo banco. Estou utilizando o Supabase.
+* Configure o seu banco: Crie um arquivo .env no projeto e configure as informações de conexão do seu banco de dados.
+
+.env:
+
+```
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANONKEY=your_supabase_anonkey
+```
+
 
 ### Execução
 Inicie o servidor de desenvolvimento:
