@@ -19,7 +19,7 @@ export default function Home() {
             <Container>
 
                 <ContainerHeader>
-                    <TextHeader>Seja bem-vindo(a){'\n'}ao TO DO List!</TextHeader>
+                    <TextHeader>Seja bem-vindo(a){'\n'}ao ToDo List!</TextHeader>
                 </ContainerHeader>
 
                 <ContainerBody>
